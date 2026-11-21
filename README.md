@@ -4,8 +4,9 @@
 One Tesla T4 · one seed · registered live run · Qwen2.5-0.5B / 1.5B / 3B-Instruct  
 
 **Master digest (SHA-256):** `16a0c8fbfe3b1a42bb30d339881789bc43ef6fa91aab5074922eeeebb3f78d72`  
-Dry and live runs printed the **same** digest.  
-**Notebook pin (SHA-256):** `52027d065bd05e0f65f51a61b65d29b8b94154f511091d729e503cacad2911c0`
+**Notebook pin (SHA-256):** `52027d065bd05e0f65f51a61b65d29b8b94154f511091d729e503cacad2911c0`  
+
+The pre-registration file and the results file both carry the master digest above. The ledger records the single held-out look for each test. The outer runner printed **HARNESS INTEGRITY: VERIFIED** and confirmed the spec was unchanged since registration.
 
 ---
 
@@ -44,7 +45,7 @@ This repository is a **worked example of that method** on small open-weight mode
 
 - Nothing about frontier (Claude / GPT-class) models  
 - Nothing about real attacks on live third-party systems  
-- Model-attacker score (0 evasions / 100) is a **lower bound** (many outputs dropped the claim)  
+- Model-attacker score (0 evasions / 100) is a **lower bound** — 77 of the 100 outputs dropped the DOI entirely, so evasion was not testable on those rows  
 - "Removed" at 0.5B is not a test of sophisticated deception at high capability  
 - One seed, synthetic tasks, scripted attackers  
 
@@ -59,21 +60,32 @@ Failures are part of the result.
 | `EGIS_four_mentor_tests_v3.ipynb` | Full experiment notebook |
 | `egis_v3_live_runner.py` | Outer harness: pins notebook hash, runs live, audits files |
 | `RESULTS.md` | Headline numbers from the registered live run |
-| `v3_prereg.json` / `results_v3.json` / `ledger_v3.json` | Upload from your Colab `/content/egis_runs/` after a verified run |
-| `v3_testB_model_attacker_outputs.json` | Upload from Colab if present |
-| `v3_runner_audit.json` | Upload from Colab if present |
+| `v3_prereg.json` | Pre-registration spec (master digest `16a0c8fb…`) |
+| `results_v3.json` | Full results (same master digest) |
+| `ledger_v3.json` | Single-look ledger: 5 entries (A×3, C, D), dated 2026-11-21 |
+| `v3_testB_model_attacker_outputs.json` | B4 raw outputs (100 rows) |
+| `v3_runner_audit.json` | Post-run audit log — all checks passed |
 
 Per-test digests: A `2f7510c41f7d` · B `0367f22ebce5` · C `552e5daa8d2d` · D `79194a36f1a3`  
 Seed: `20261208`
 
 ---
 
+## Provenance note
+
+The pre-registration, results, and runner audit all record the same master digest: `16a0c8fb…`. The runner verified that the spec did not change between registration and the live run, and that the held-out look was taken exactly once per test.
+
+An earlier development iteration produced a different digest and is not part of this repository. The run recorded here is the one the ticket registered.
+
+---
+
 ## How to re-check
 
-1. Confirm notebook SHA-256 matches the pin in the runner.  
-2. Run with `DRY_RUN = True`; note master digest.  
-3. Set `DRY_RUN = False`, change nothing else; live digest must equal dry.  
-4. Runner post-audit must report **HARNESS INTEGRITY: VERIFIED**.
+1. Confirm the notebook SHA-256 matches `52027d065bd05e0f65f51a61b65d29b8b94154f511091d729e503cacad2911c0`.  
+2. Recompute the SHA-256 of `v3_prereg.json` — it should be `16a0c8fbfe3b1a42bb30d339881789bc43ef6fa91aab5074922eeeebb3f78d72`.  
+3. Run the notebook with `DRY_RUN = True`; note the master digest. It must equal `16a0c8fb…`.  
+4. Set `DRY_RUN = False`, change nothing else; live digest must equal dry.  
+5. Run the outer runner; its post-audit must report **HARNESS INTEGRITY: VERIFIED**.
 
 If Colab's PEFT stack raises `torchao` version errors during Test C, upgrade or pin compatible `peft` / `torchao` before treating the run as complete.
 
